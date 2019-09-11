@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: 'This is a sample template'
+Resources: 
+  HealloWorld: # TypeにはFunction/ Api/ SimpleTable/ LayerVesion/ Applicationがある
+    Type: 'AWS::Serverless::Function'
+    # Propertiesはイベントの種類によって違う
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs8.10
+      CodeUri: s3://xxx-bucket/xxx.zip
+      Description: HelloWorld
+      MemorySize: 128
+      Timeout: 3
+      CodeUri: s3://my-bucket/9aksjsbf994ndns8nd
+      Events:
+        GetHello:
+          Type: Api
+          Properties:
+            path: /hello
+            method: get
+      # Aliasのとり方?
+      AutoPublishAlias: live
+      DeploymentPreference:
+        # 段階的にデプロイとか、デプロイ戦略を見る。なんか、エラーがあったときに、ロールバックとかできるようにするらしい
+        Type: Linear10PercentEvery10Minutes
+    Policies:
+      - DynamoDBCrudPolicy:
+          TableName: mytable
